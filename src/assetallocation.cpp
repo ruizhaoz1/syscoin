@@ -28,7 +28,7 @@
 using namespace std::chrono;
 using namespace std;
 extern void SendMoneySyscoin(const vector<unsigned char> &vchAlias, const vector<unsigned char> &vchWitness, const CRecipient &aliasRecipient, vector<CRecipient> &vecSend, CWalletTx& wtxNew, CCoinControl* coinControl, bool fUseInstantSend = false, bool transferAlias = false);
-vector<make_pair<uint256, int64_t> > vecTPSTestReceivedTimes;
+vector<pair<uint256, int64_t>> vecTPSTestReceivedTimes;
 bool IsAssetAllocationOp(int op) {
 	return op == OP_ASSET_ALLOCATION_SEND || op == OP_ASSET_COLLECT_INTEREST;
 }
