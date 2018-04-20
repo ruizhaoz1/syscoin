@@ -347,6 +347,7 @@ extern UniValue assetallocationsend(const UniValue& params, bool fHelp);
 extern UniValue assetallocationcollectinterest(const UniValue& params, bool fHelp);
 extern UniValue assetallocationinfo(const UniValue& params, bool fHelp);
 extern UniValue assetallocationsenderstatus(const UniValue& params, bool fHelp);
+extern UniValue tpstestinfo(const UniValue& params, bool fHelp);
 bool StartRPC();
 void InterruptRPC();
 void StopRPC();

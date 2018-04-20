@@ -109,6 +109,7 @@ using namespace std;
 
 //Syscoin only features
 bool fMasterNode = false;
+std::vector<unsigned char> vchReceiverAliasName;
 bool fLiteMode = false;
 /**
     nWalletBackups:

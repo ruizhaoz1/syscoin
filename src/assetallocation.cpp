@@ -28,7 +28,7 @@
 using namespace std::chrono;
 using namespace std;
 extern void SendMoneySyscoin(const vector<unsigned char> &vchAlias, const vector<unsigned char> &vchWitness, const CRecipient &aliasRecipient, vector<CRecipient> &vecSend, CWalletTx& wtxNew, CCoinControl* coinControl, bool fUseInstantSend = false, bool transferAlias = false);
-
+vector<make_pair<uint256, int64_t> > vecTPSTestReceivedTimes;
 bool IsAssetAllocationOp(int op) {
 	return op == OP_ASSET_ALLOCATION_SEND || op == OP_ASSET_COLLECT_INTEREST;
 }
@@ -366,6 +366,7 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, int op, const vector<vec
 	bool bRevert = false;
 	bool bBalanceOverrun = false;
 	bool bAddAllReceiversToConflictList = false;
+	bool bTPSTestFoundReceiver = false;
 	if (op == OP_ASSET_COLLECT_INTEREST)
 	{
 		if (!GetAssetAllocation(assetAllocationTuple, dbAssetAllocation))
@@ -525,6 +526,9 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, int op, const vector<vec
 						receiverAllocation.vchMemo = theAssetAllocation.vchMemo;
 						receiverAllocation.nBalance += amountTuple.second;
 						theAssetAllocation.nBalance -= amountTuple.second;
+						if (vchReceiverAliasName == receiverAllocationTuple.vchAlias) {
+							bTPSTestFoundReceiver = true;
+						}
 					}
 
 					if (!passetallocationdb->WriteAssetAllocation(receiverAllocation, dbAsset, INT64_MAX, fJustCheck))
@@ -666,6 +670,11 @@ bool CheckAssetAllocationInputs(const CTransaction &tx, int op, const vector<vec
 		int64_t ms = INT64_MAX;
 		if (fJustCheck) {
 			ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+			if (bTPSTestFoundReceiver)
+			{
+				vecTPSTestReceivedTimes.emplace_back(theAssetAllocation.txHash, ms);
+				
+			}
 		}
 
 		if (!passetallocationdb->WriteAssetAllocation(theAssetAllocation, dbAsset, ms, fJustCheck))
@@ -778,7 +787,7 @@ UniValue assetallocationsend(const UniValue& params, bool fHelp) {
 	ArrivalTimesMap arrivalTimes;
 	passetallocationdb->ReadISArrivalTimes(assetAllocationTuple, arrivalTimes);
 	const int64_t & nNow = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-	for (auto& arrivalTime : arrivalTimes) {
+	/*for (auto& arrivalTime : arrivalTimes) {
 		int minLatency = ZDAG_MINIMUM_LATENCY_SECONDS*1000;
 		if (GetBoolArg("-unittest", false))
 			minLatency = 1000;
@@ -786,8 +795,7 @@ UniValue assetallocationsend(const UniValue& params, bool fHelp) {
 		if ((nNow - arrivalTime.second) < minLatency) {
 			throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1503 - " + _("Please wait a few more seconds and try again..."));
 		}
-	}
-	
+	}*/
 	if (assetAllocationConflicts.find(assetAllocationTuple) != assetAllocationConflicts.end())
 		throw runtime_error("SYSCOIN_ASSET_ALLOCATION_RPC_ERROR: ERRCODE: 1504 - " + _("This asset allocation is involved in a conflict which must be resolved with Proof-Of-Work. Please wait for a block confirmation and try again..."));
 	
@@ -896,6 +904,20 @@ UniValue assetallocationcollectinterest(const UniValue& params, bool fHelp) {
 	UniValue res(UniValue::VARR);
 	res.push_back(EncodeHexTx(wtx));
 	return res;
+}
+UniValue tpstestinfo(const UniValue& params, bool fHelp) {
+	if (fHelp || 0 != params.size())
+		throw runtime_error("tpstestinfo\n"
+			"Gets TPS Test information for receivers of assetallocation transfers\n");
+
+	UniValue oTPSTestResults(UniValue::VARR);
+	for (auto &receivedTime : vecTPSTestReceivedTimes) {
+		UniValue oTPSTestStatusObj(UniValue::VOBJ);
+		oTPSTestStatusObj.push_back(Pair("txid", receivedTime.first.GetHex()));
+		oTPSTestStatusObj.push_back(Pair("time", receivedTime.second));
+		oTPSTestResults.push_back(oTPSTestStatusObj);
+	}
+	return oTPSTestResults;
 }
 UniValue assetallocationinfo(const UniValue& params, bool fHelp) {
     if (fHelp || 3 != params.size())

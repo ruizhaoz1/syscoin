@@ -1996,7 +1996,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
 	// ********************************************************* Step 11a: setup PrivateSend
 	fMasterNode = GetBoolArg("-masternode", false);
-
+	vchReceiverAliasName = vchFromString(GetArg("-receiveralias", ""));
+	LogPrintf("TPS TEST: Receiver Alias - %s\n", stringFromVch(vchReceiverAliasName).c_str());
 	// SYSCOIN
 	if ((fMasterNode || masternodeConfig.getCount() > 0) && !fTxIndex) {
 		return InitError("Enabling Masternode support requires turning on transaction indexing."
