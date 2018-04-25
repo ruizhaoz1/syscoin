@@ -430,9 +430,10 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
             rawTx.vout.push_back(out);
         } else {
             CSyscoinAddress address(name_);
+            /*
             if (!address.IsValid())
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid Syscoin address: ")+name_);
-
+            */
             if (setAddress.count(address))
                 throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+name_);
             setAddress.insert(address);
@@ -505,8 +506,10 @@ UniValue decoderawtransaction(const UniValue& params, bool fHelp)
 
     CTransaction tx;
 
+    /*
     if (!DecodeHexTx(tx, params[0].get_str()))
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
+    */
 
     UniValue result(UniValue::VOBJ);
     TxToJSON(tx, uint256(), result);
@@ -647,14 +650,17 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     CDataStream ssData(txData, SER_NETWORK, PROTOCOL_VERSION);
     vector<CMutableTransaction> txVariants;
     while (!ssData.empty()) {
-        try {
-            CMutableTransaction tx;
-            ssData >> tx;
-            txVariants.push_back(tx);
-        }
+        
+        CMutableTransaction tx;
+        ssData >> tx;
+        txVariants.push_back(tx);
+        
+     
+        /*
         catch (const std::exception&) {
             throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
         }
+        */
     }
 
     if (txVariants.empty())
@@ -786,10 +792,16 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     for (unsigned int i = 0; i < mergedTx.vin.size(); i++) {
         CTxIn& txin = mergedTx.vin[i];
         const CCoins* coins = view.AccessCoins(txin.prevout.hash);
-        if (coins == NULL || !coins->IsAvailable(txin.prevout.n)) {
-            TxInErrorToJSON(txin, vErrors, "Input not found or already spent");
+        
+        if (coins == NULL) {
+            TxInErrorToJSON(txin, vErrors, "Coins are null");
             continue;
         }
+        if (!coins->IsAvailable(txin.prevout.n)) {
+            TxInErrorToJSON(txin, vErrors, "Coins are not available");
+            continue;
+        }
+        
         const CScript& prevPubKey = coins->vout[txin.prevout.n].scriptPubKey;
 
         txin.scriptSig.clear();
@@ -847,9 +859,14 @@ UniValue sendrawtransaction(const UniValue& params, bool fHelp)
 
     // parse hex string from parameter
     CTransaction tx;
+
+    /*
     if (!DecodeHexTx(tx, params[0].get_str()))
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
+    */   
+
     uint256 hashTx = tx.GetHash();
+    
 
     bool fOverrideFees = false;
     if (params.size() > 1)
