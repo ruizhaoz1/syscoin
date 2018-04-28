@@ -8,7 +8,7 @@
 #include "key.h"
 #include "validation.h"
 #include "spork.h"
-
+#include "clientversion.h"
 class CMasternode;
 class CMasternodeBroadcast;
 class CConnman;
