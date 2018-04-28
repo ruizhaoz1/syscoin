@@ -818,7 +818,7 @@ bool CMasternodePing::CheckAndUpdate(CMasternode* pmn, bool fFromNewBroadcast, i
     // relay ping for nodes in ENABLED/EXPIRED/SENTINEL_PING_EXPIRED state only, skip everyone else
     if (!pmn->IsEnabled() && !pmn->IsExpired() && !pmn->IsSentinelPingExpired()) return false;
 
-    LogPrint("masternode", "CMasternodePing::CheckAndUpdate -- Masternode ping acceepted and relayed, masternode=%s\n", masternodeOutpoint.ToStringShort());
+    LogPrint("masternode", "CMasternodePing::CheckAndUpdate -- Masternode ping accepted and relayed, masternode=%s\n", masternodeOutpoint.ToStringShort());
     Relay(connman);
 
     return true;
