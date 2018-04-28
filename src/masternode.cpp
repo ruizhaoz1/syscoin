@@ -669,7 +669,6 @@ uint256 CMasternodePing::GetHash() const
 		ss << sigTime;
 		ss << fSentinelIsCurrent;
 		ss << nSentinelVersion;
-		ss << nDaemonVersion;
     } 
 	return ss.GetHash();
 }
