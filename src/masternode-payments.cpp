@@ -548,7 +548,7 @@ bool CMasternodeBlockPayees::GetBestPayee(CScript& payeeRet, int& nStartHeightBl
 
 	return (nVotes > -1);
 }
-bool CMasternodeBlockPayees::HasPayeeWithVotes(const CScript& payeeIn, int nVotesReq, int nOuputIndex, CMasternodePayee& payeeOut) const
+bool CMasternodeBlockPayees::HasPayeeWithVotes(const CScript& payeeIn, int nVotesReq, int nOutputIndex, CMasternodePayee& payeeOut) const
 {
     LOCK(cs_vecPayees);
 
