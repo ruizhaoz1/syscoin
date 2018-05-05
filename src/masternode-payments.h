@@ -42,19 +42,20 @@ class CMasternodePayee
 {
 private:
     CScript scriptPubKey;
+	int nOutputIndex;
     std::vector<uint256> vecVoteHashes;
 public:
 	int nStartHeight;
     CMasternodePayee() :
         scriptPubKey(),
         vecVoteHashes(),
-		nStartHeight(0)
+		nStartHeight(0), nOutputIndex(0)
         {}
 
-    CMasternodePayee(CScript payee, uint256 hashIn, int nStart) :
+    CMasternodePayee(CScript payee, uint256 hashIn, int nStart, int nOutput) :
         scriptPubKey(payee),
         vecVoteHashes(),
-		nStartHeight(nStart)
+		nStartHeight(nStart), nOutputIndex(nOutput)
     {
         vecVoteHashes.push_back(hashIn);
     }
@@ -66,9 +67,11 @@ public:
         READWRITE(*(CScriptBase*)(&scriptPubKey));
         READWRITE(vecVoteHashes);
 		READWRITE(nStartHeight);
+		READWRITE(nOutputIndex);
     }
 
     CScript GetPayee() const { return scriptPubKey; }
+	int GetPayeeOutputIndex() const { return nOutputIndex; }
 
     void AddVoteHash(uint256 hashIn) { vecVoteHashes.push_back(hashIn); }
     std::vector<uint256> GetVoteHashes() const { return vecVoteHashes; }
@@ -102,7 +105,7 @@ public:
     void AddPayee(const CMasternodePaymentVote& vote);
     bool GetBestPayee(CScript& payeeRet) const;
 	bool GetBestPayee(CScript& payeeRet, int &nStartHeightBlock) const;
-    bool HasPayeeWithVotes(const CScript& payeeIn, int nVotesReq, CMasternodePayee& payee) const;
+    bool HasPayeeWithVotes(const CScript& payeeIn, int nVotesReq, int nOutputIndex, CMasternodePayee& payee) const;
 
     bool IsTransactionValid(const CTransaction& txNew, const int64_t &nHeight, CAmount& nTotalRewardWithMasternodes) const;
 

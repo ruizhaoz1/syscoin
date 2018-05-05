@@ -305,7 +305,7 @@ void CMasternode::UpdateLastPaid(const CBlockIndex *pindex, int nMaxBlocksToScan
     const CBlockIndex *BlockReading = pindex;
 	
 	const CChainParams& chainparams = Params();
-    CScript mnpayee = GetScriptForDestination(pubKeyCollateralAddress.GetID());
+    const CScript &mnpayee = GetScriptForDestination(pubKeyCollateralAddress.GetID());
     // LogPrint("mnpayments", "CMasternode::UpdateLastPaidBlock -- searching for block with payment to %s\n", outpoint.ToStringShort());
 
     LOCK(cs_mapMasternodeBlocks);
@@ -313,7 +313,7 @@ void CMasternode::UpdateLastPaid(const CBlockIndex *pindex, int nMaxBlocksToScan
 	CAmount nTotal;
     for (int i = 0; BlockReading && BlockReading->nHeight > nBlockLastPaid && i < nMaxBlocksToScanBack; i++) {
         if(mnpayments.mapMasternodeBlocks.count(BlockReading->nHeight) &&
-            mnpayments.mapMasternodeBlocks[BlockReading->nHeight].HasPayeeWithVotes(mnpayee, 2, payee))
+            mnpayments.mapMasternodeBlocks[BlockReading->nHeight].HasPayeeWithVotes(mnpayee, 2, outpoint.n, payee))
         {
             CBlock block;
 			if (!ReadBlockFromDisk(block, BlockReading, Params().GetConsensus())) {
