@@ -923,6 +923,7 @@ std::string CMasternodePaymentVote::ToString() const
 
     info << masternodeOutpoint.ToStringShort() <<
             ", " << nBlockHeight <<
+			", " << nStartHeight <<
             ", " << ScriptToAsmStr(payee) <<
             ", " << (int)vchSig.size();
 
