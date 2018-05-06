@@ -339,7 +339,7 @@ void CMasternodePayments::ProcessMessage(CNode* pfrom, const std::string& strCom
         }
 
         int nFirstBlock = nCachedBlockHeight - GetStorageLimit();
-        if(vote.nBlockHeight < nFirstBlock || vote.nBlockHeight > nCachedBlockHeight+20) {
+        if(vote.nBlockHeight < nFirstBlock || vote.nBlockHeight > nCachedBlockHeight+50) {
             LogPrint("mnpayments", "MASTERNODEPAYMENTVOTE -- vote out of range: nFirstBlock=%d, nBlockHeight=%d, nHeight=%d\n", nFirstBlock, vote.nBlockHeight, nCachedBlockHeight);
             return;
         }
