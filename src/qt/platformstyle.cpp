@@ -1,17 +1,13 @@
-// Copyright (c) 2015 The Syscoin Core developers
+// Copyright (c) 2015-2018 The Syscoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "platformstyle.h"
-
-#include "guiconstants.h"
+#include <qt/platformstyle.h>
 
 #include <QApplication>
 #include <QColor>
-#include <QIcon>
 #include <QImage>
 #include <QPalette>
-#include <QPixmap>
 
 static const struct {
     const char *platformId;
@@ -25,7 +21,7 @@ static const struct {
     {"macosx", false, false, true},
     {"windows", true, false, false},
     /* Other: linux, unix, ... */
-    {"other", true, false, false}
+    {"other", true, true, false}
 };
 static const unsigned platform_styles_count = sizeof(platform_styles)/sizeof(*platform_styles);
 
@@ -48,8 +44,7 @@ void MakeSingleColorImage(QImage& img, const QColor& colorbase)
 QIcon ColorizeIcon(const QIcon& ico, const QColor& colorbase)
 {
     QIcon new_ico;
-    QSize sz;
-    Q_FOREACH(sz, ico.availableSizes())
+    for (const QSize& sz : ico.availableSizes())
     {
         QImage img(ico.pixmap(sz).toImage());
         MakeSingleColorImage(img, colorbase);
@@ -142,6 +137,6 @@ const PlatformStyle *PlatformStyle::instantiate(const QString &platformId)
                     platform_styles[x].useExtraSpacing);
         }
     }
-    return 0;
+    return nullptr;
 }
 

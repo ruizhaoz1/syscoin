@@ -109,7 +109,7 @@ def main():
     match = re.search('^\+\+\+\ (.*?/){%s}(\S*)' % args.p, line)
     if match:
       filename = match.group(2)
-    if filename == None:
+    if filename is None:
       continue
 
     if args.regex is not None:
@@ -152,7 +152,7 @@ def main():
       sys.exit(p.returncode)
 
     if not args.i:
-      with open(filename) as f:
+      with open(filename, encoding="utf8") as f:
         code = f.readlines()
       formatted_code = io.StringIO(stdout).readlines()
       diff = difflib.unified_diff(code, formatted_code,

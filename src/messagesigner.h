@@ -1,11 +1,12 @@
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2017-2018 The Syscoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MESSAGESIGNER_H
-#define MESSAGESIGNER_H
+#ifndef SYSCOIN_MESSAGESIGNER_H
+#define SYSCOIN_MESSAGESIGNER_H
 
-#include "key.h"
+#include <key.h>
 
 /** Helper class for signing messages and checking their signatures
  */
@@ -35,4 +36,4 @@ public:
     static bool VerifyHash(const uint256& hash, const CKeyID& keyID, const std::vector<unsigned char>& vchSig, std::string& strErrorRet);
 };
 
-#endif
+#endif // SYSCOIN_MESSAGESIGNER_H

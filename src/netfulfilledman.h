@@ -1,13 +1,14 @@
-// Copyright (c) 2014-2017 The Syscoin Core developers
+// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2017-2018 The Syscoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef NETFULFILLEDMAN_H
-#define NETFULFILLEDMAN_H
+#ifndef SYSCOIN_NETFULFILLEDMAN_H
+#define SYSCOIN_NETFULFILLEDMAN_H
 
-#include "netaddress.h"
-#include "serialize.h"
-#include "sync.h"
+#include <netaddress.h>
+#include <serialize.h>
+#include <sync.h>
 
 class CNetFulfilledRequestManager;
 extern CNetFulfilledRequestManager netfulfilledman;
@@ -44,6 +45,8 @@ public:
     void Clear();
 
     std::string ToString() const;
+
+    void DoMaintenance() { CheckAndRemove(); }
 };
 
-#endif
+#endif // SYSCOIN_NETFULFILLEDMAN_H
